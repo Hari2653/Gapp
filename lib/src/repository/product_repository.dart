@@ -23,7 +23,7 @@ Future<Stream<Product>> getTrendingProducts(Address address) async {
       Filter.fromJSON(json.decode(prefs.getString('filter') ?? '{}'));
   filter.delivery = false;
   filter.open = false;
-  _queryParams['limit'] = '2';
+  _queryParams['limit'] = '6';
   _queryParams['trending'] = 'week';
   if (!address.isUnknown()) {
     _queryParams['myLon'] = address.longitude.toString();
@@ -32,7 +32,7 @@ Future<Stream<Product>> getTrendingProducts(Address address) async {
     _queryParams['areaLat'] = address.latitude.toString();
   }
   _queryParams.addAll(filter.toQuery());
-  // uri = uri.replace(queryParameters: _queryParams);
+  uri = uri.replace(queryParameters: _queryParams);
   try {
     final client = new http.Client();
     final streamedRest = await client.send(http.Request('get', uri));

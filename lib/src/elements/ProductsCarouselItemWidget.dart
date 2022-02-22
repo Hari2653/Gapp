@@ -39,7 +39,7 @@ class ProductsCarouselItemWidget extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.all(Radius.circular(5)),
                     child: CachedNetworkImage(
-                      fit: BoxFit.cover,
+                      fit: BoxFit.fitWidth,
                       imageUrl: product.image.thumb,
                       placeholder: (context, url) => Image.asset(
                         'assets/img/loading.gif',

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:markets/src/pages/errorPage.dart';
 import 'package:markets/src/pages/gallery.dart';
+import 'package:markets/src/pages/pagesCategory.dart';
 
 import 'src/models/route_argument.dart';
 import 'src/pages/cart.dart';
@@ -54,6 +56,10 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => ForgetPasswordWidget());
       case '/Pages':
         return MaterialPageRoute(builder: (_) => PagesWidget(currentTab: args));
+      case '/PagesCategory':
+        return MaterialPageRoute(
+            builder: (_) =>
+                PagesCategory(routeArgument: args as RouteArgument));
       case '/Favorites':
         return MaterialPageRoute(builder: (_) => FavoritesWidget());
       case '/Chat':
@@ -128,15 +134,33 @@ class RouteGenerator {
         // If there is no such named route in the switch statement, e.g. /third
         //git
         return MaterialPageRoute(
-            builder: (_) => Scaffold(
-                body: Container(
-                    child: Center(
-                        child: Text(
-                            'Something Went Wrong, Please restart the app',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                                color: Colors.grey[500]))))));
+            builder: (_) => Errorpage());
+            
+            
+            // Scaffold(
+            //     backgroundColor: Colors.white,
+            //     body: Container(
+            //         child: Center(
+            //             child: Column(
+            //       crossAxisAlignment: CrossAxisAlignment.center,
+            //       mainAxisAlignment: MainAxisAlignment.center,
+            //       children: [
+            //         Icon(
+            //           Icons.bug_report_outlined,
+            //           size: 40,
+            //           color: Colors.red[400],
+            //         ),
+            //         Divider(),
+            //         Text('Sorry, Something Went Wrong',
+            //             style: TextStyle(
+            //                 fontWeight: FontWeight.bold,
+            //                 fontSize: 20,
+            //                 color: Colors.grey)),
+            //         Divider(),
+            //       ],
+            //     )))));
+   
+   
     }
   }
 }
