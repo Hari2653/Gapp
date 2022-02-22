@@ -18,8 +18,10 @@ class CategoriesCarouselItemWidget extends StatelessWidget {
       splashColor: Theme.of(context).accentColor.withOpacity(0.08),
       highlightColor: Colors.transparent,
       onTap: () {
-        Navigator.of(context)
-            .pushNamed('/Category', arguments: RouteArgument(id: category.id));
+        Navigator.of(context).pushNamed('/PagesCategory',
+            arguments: RouteArgument(id: category.id));
+        // Navigator.of(context)
+        //     .pushNamed('/Category', arguments: RouteArgument(id: category.id));
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,

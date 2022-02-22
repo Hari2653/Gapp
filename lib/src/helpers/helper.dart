@@ -408,6 +408,7 @@ class Helper {
       return Future.value(false);
     }
     SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+
     return Future.value(true);
   }
 

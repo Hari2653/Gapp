@@ -1,30 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:markets/src/elements/DrawerWidget.dart';
+import 'package:markets/src/elements/FilterWidget.dart';
+import 'package:markets/src/helpers/helper.dart';
+import 'package:markets/src/models/route_argument.dart';
+import 'package:markets/src/pages/category.dart';
 import 'package:markets/src/pages/favorites.dart';
+import 'package:markets/src/pages/home.dart';
 import 'package:markets/src/pages/login.dart';
+import 'package:markets/src/pages/notifications.dart';
+import 'package:markets/src/pages/orders.dart';
 import 'package:markets/src/pages/profile.dart';
 import 'package:markets/src/repository/user_repository.dart';
 
-import '../elements/DrawerWidget.dart';
-import '../elements/FilterWidget.dart';
-import '../helpers/helper.dart';
-import '../models/route_argument.dart';
-import '../pages/home.dart';
-import '../pages/map.dart';
-import '../pages/notifications.dart';
-import '../pages/orders.dart';
-import 'messages.dart';
-
 // ignore: must_be_immutable
-class PagesWidget extends StatefulWidget {
+class PagesCategory extends StatefulWidget {
   dynamic currentTab;
+  dynamic catId;
   RouteArgument routeArgument;
-  Widget currentPage = HomeWidget();
+  Widget currentPage = CategoryWidget();
   final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  PagesWidget({
-    Key key,
-    this.currentTab,
-  }) {
+  PagesCategory({Key key, RouteArgument routeArgument}) {
+    if (routeArgument.id != null) {
+      catId = routeArgument.id;
+    }
     if (currentTab != null) {
       if (currentTab is RouteArgument) {
         routeArgument = currentTab;
@@ -36,21 +35,16 @@ class PagesWidget extends StatefulWidget {
   }
 
   @override
-  _PagesWidgetState createState() {
-    return _PagesWidgetState();
+  _PagesCategoryState createState() {
+    return _PagesCategoryState();
   }
 }
 
-class _PagesWidgetState extends State<PagesWidget> {
+class _PagesCategoryState extends State<PagesCategory> {
   initState() {
     super.initState();
+    print(widget.currentTab);
     _selectTab(widget.currentTab);
-  }
-
-  @override
-  void didUpdateWidget(PagesWidget oldWidget) {
-    _selectTab(oldWidget.currentTab);
-    super.didUpdateWidget(oldWidget);
   }
 
   void _selectTab(int tabItem) {
@@ -68,7 +62,8 @@ class _PagesWidgetState extends State<PagesWidget> {
           break;
         case 2:
           widget.currentPage =
-              HomeWidget(parentScaffoldKey: widget.scaffoldKey);
+              // HomeWidget(parentScaffoldKey: widget.scaffoldKey);
+              CategoryWidget(routeArgument: RouteArgument(id: widget.catId));
           break;
         case 3:
           widget.currentPage =
@@ -84,7 +79,10 @@ class _PagesWidgetState extends State<PagesWidget> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: Helper.of(context).onWillPop,
+      onWillPop: () async {
+        Navigator.pop(context);
+        return false;
+      },
       child: Scaffold(
         key: widget.scaffoldKey,
         drawer: DrawerWidget(),
@@ -105,7 +103,10 @@ class _PagesWidgetState extends State<PagesWidget> {
           unselectedItemColor: Theme.of(context).focusColor.withOpacity(1),
           currentIndex: widget.currentTab,
           onTap: (int i) {
- 
+            if (i == 2) {
+              // Navigator.of(context).pushNamed('/Pages', arguments: 2);
+              Navigator.pop(context);
+            }
             this._selectTab(i);
           },
           // this will be set when a new tab is tapped

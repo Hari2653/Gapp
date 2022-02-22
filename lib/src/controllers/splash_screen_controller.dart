@@ -94,6 +94,7 @@ class SplashScreenController extends ControllerMVC {
 
   Future notificationOnMessage(Map<String, dynamic> message) async {
     Fluttertoast.showToast(
+      
       msg: message['notification']['title'],
       toastLength: Toast.LENGTH_LONG,
       gravity: ToastGravity.TOP,
