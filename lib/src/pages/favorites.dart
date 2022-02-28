@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:markets/src/elements/DrawerWidget.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 
 import '../../generated/l10n.dart';
@@ -29,6 +30,9 @@ class _FavoritesWidgetState extends StateMVC<FavoritesWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _con.scaffoldKey,
+      drawer: DrawerWidget(
+        parentScaffoldKey: _con.scaffoldKey,
+      ),
       appBar: AppBar(
 /*        leading: new IconButton(
           icon: new Icon(Icons.sort, color: Theme.of(context).hintColor),

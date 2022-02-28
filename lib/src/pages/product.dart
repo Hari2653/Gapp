@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
@@ -31,6 +33,8 @@ class ProductWidget extends StatefulWidget {
 class _ProductWidgetState extends StateMVC<ProductWidget> {
   ProductController _con;
 
+  TextEditingController qtyController = TextEditingController();
+
   _ProductWidgetState() : super(ProductController()) {
     _con = controller;
   }
@@ -41,6 +45,12 @@ class _ProductWidgetState extends StateMVC<ProductWidget> {
     _con.listenForCart();
     _con.listenForFavorite(productId: widget.routeArgument.id);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _con.debounce?.cancel();
+    super.dispose();
   }
 
   @override
@@ -437,41 +447,134 @@ class _ProductWidgetState extends StateMVC<ProductWidget> {
                             Row(
                               children: <Widget>[
                                 Expanded(
-                                  child: Text(
-                                    S.of(context).quantity,
-                                    style:
-                                        Theme.of(context).textTheme.subtitle1,
-                                  ),
-                                ),
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    IconButton(
-                                      onPressed: () {
-                                        _con.decrementQuantity();
-                                      },
-                                      iconSize: 30,
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 5, vertical: 10),
-                                      icon: Icon(Icons.remove_circle_outline),
-                                      color: Theme.of(context).hintColor,
-                                    ),
-                                    Text(_con.quantity.toString(),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        S.of(context).quantity,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .subtitle1),
-                                    IconButton(
-                                      onPressed: () {
-                                        _con.incrementQuantity();
-                                      },
-                                      iconSize: 30,
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 5, vertical: 10),
-                                      icon: Icon(Icons.add_circle_outline),
-                                      color: Theme.of(context).hintColor,
-                                    )
-                                  ],
+                                            .subtitle1,
+                                      ),
+                                      IconButton(
+                                          onPressed: () {
+                                            _con.switchQuantity(true);
+                                            print(_con.switchStatus);
+                                          },
+                                          iconSize: 20,
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 5, vertical: 10),
+                                          icon: Icon(Icons.sync),
+                                          color: _con.switchStatus
+                                              ? Theme.of(context).hintColor
+                                              : Theme.of(context).accentColor),
+                                    ],
+                                  ),
                                 ),
+                                _con.switchStatus
+                                    ? Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          IconButton(
+                                            onPressed: () {
+                                              _con.decrementQuantity();
+                                            },
+                                            iconSize: 30,
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 5, vertical: 10),
+                                            icon: Icon(
+                                                Icons.remove_circle_outline),
+                                            color: Theme.of(context).hintColor,
+                                          ),
+                                          Text(_con.quantity.toString(),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .subtitle1),
+                                          IconButton(
+                                            onPressed: () {
+                                              _con.incrementQuantity();
+                                            },
+                                            iconSize: 30,
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 5, vertical: 10),
+                                            icon:
+                                                Icon(Icons.add_circle_outline),
+                                            color: Theme.of(context).hintColor,
+                                          )
+                                        ],
+                                      )
+                                    : Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          Container(
+                                            decoration: BoxDecoration(
+                                                color: Theme.of(context)
+                                                    .primaryColor,
+                                                borderRadius: BorderRadius.only(
+                                                    topRight:
+                                                        Radius.circular(20),
+                                                    bottomLeft:
+                                                        Radius.circular(20),
+                                                    bottomRight:
+                                                        Radius.circular(20),
+                                                    topLeft:
+                                                        Radius.circular(20)),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                      color: Theme.of(context)
+                                                          .focusColor
+                                                          .withOpacity(0.5),
+                                                      offset: Offset(0, -2),
+                                                      blurRadius: 5.0)
+                                                ]),
+                                            child: SizedBox(
+                                              width: 80,
+                                              height: 34,
+                                              child: TextFormField(
+                                                keyboardType:
+                                                    TextInputType.number,
+                                                onChanged: _con.onSearchChanged,
+                                                textAlign: TextAlign.center,
+                                                initialValue:
+                                                    _con.quantity.toString(),
+                                                decoration: InputDecoration(
+                                                  isDense: true,
+                                                  border: InputBorder.none,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+
+                                          // IconButton(
+                                          //   onPressed: () {
+                                          //     // _con.decrementQuantity();
+                                          //   },
+                                          //   iconSize: 30,
+                                          //   padding: EdgeInsets.symmetric(
+                                          //       horizontal: 5, vertical: 10),
+                                          //   icon: Icon(
+                                          //       Icons.remove_circle_outline),
+                                          //   color: Theme.of(context).hintColor,
+                                          // ),
+                                          // // TextFormField(
+                                          // //   controller: qtyController,
+                                          // // ),
+                                          // Text(_con.quantity.toString(),
+                                          //     style: Theme.of(context)
+                                          //         .textTheme
+                                          //         .subtitle1),
+                                          // IconButton(
+                                          //   onPressed: () {
+                                          //     _con.incrementQuantity();
+                                          //   },
+                                          //   iconSize: 30,
+                                          //   padding: EdgeInsets.symmetric(
+                                          //       horizontal: 5, vertical: 10),
+                                          //   icon:
+                                          //       Icon(Icons.add_circle_outline),
+                                          //   color: Theme.of(context).hintColor,
+                                          // )
+                                        ],
+                                      )
                               ],
                             ),
                             SizedBox(height: 10),
