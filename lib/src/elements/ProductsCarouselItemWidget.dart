@@ -57,7 +57,7 @@ class ProductsCarouselItemWidget extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(100)),
                   color: product.discountPrice > 0
-                      ? Colors.red
+                      ? Colors.red.shade300
                       : Theme.of(context).accentColor,
                 ),
                 alignment: AlignmentDirectional.topEnd,
@@ -80,7 +80,7 @@ class ProductsCarouselItemWidget extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   Text(
-                    this.product.name,
+                    this.product.name.toString(),
                     overflow: TextOverflow.fade,
                     softWrap: false,
                     style: Theme.of(context).textTheme.bodyText2,

@@ -105,7 +105,6 @@ class _PagesWidgetState extends State<PagesWidget> {
           unselectedItemColor: Theme.of(context).focusColor.withOpacity(1),
           currentIndex: widget.currentTab,
           onTap: (int i) {
- 
             this._selectTab(i);
           },
           // this will be set when a new tab is tapped

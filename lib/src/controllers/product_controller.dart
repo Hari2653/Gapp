@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 
@@ -18,9 +20,28 @@ class ProductController extends ControllerMVC {
   bool loadCart = false;
   int current = 0;
   GlobalKey<ScaffoldState> scaffoldKey;
+  bool switchStatus = true;
+  Timer debounce;
 
   ProductController() {
     this.scaffoldKey = new GlobalKey<ScaffoldState>();
+  }
+  void switchQuantity(bool data) {
+    if (data) {
+      setState(() {
+        switchStatus = !switchStatus;
+      });
+    }
+  }
+
+  onSearchChanged(String query) {
+    if (debounce?.isActive ?? false) debounce.cancel();
+    debounce = Timer(const Duration(milliseconds: 250), () {
+      print(query);
+      if (query.length > 0) {
+        calculateTotalbyInput(double.parse(query));
+      }
+    });
   }
 
   void listenForProduct({String productId, String message}) async {
@@ -66,12 +87,15 @@ class ProductController extends ControllerMVC {
   }
 
   void addToCart(Product product, {bool reset = false}) async {
+    print("this.quantity--------");
+    print(this.quantity);
     setState(() {
       this.loadCart = true;
     });
     var _newCart = new Cart();
     _newCart.product = product;
-    _newCart.options = product.options.where((element) => element.checked).toList();
+    _newCart.options =
+        product.options.where((element) => element.checked).toList();
     _newCart.quantity = this.quantity;
     // if product exist in the cart then increment quantity
     var _oldCart = isExistInCart(_newCart);
@@ -101,7 +125,8 @@ class ProductController extends ControllerMVC {
   }
 
   Cart isExistInCart(Cart _cart) {
-    return carts.firstWhere((Cart oldCart) => _cart.isSame(oldCart), orElse: () => null);
+    return carts.firstWhere((Cart oldCart) => _cart.isSame(oldCart),
+        orElse: () => null);
   }
 
   void addToFavorite(Product product) async {
@@ -135,16 +160,34 @@ class ProductController extends ControllerMVC {
     var _id = product.id;
     product = new Product();
     listenForFavorite(productId: _id);
-    listenForProduct(productId: _id, message: S.of(state.context).productRefreshedSuccessfuly);
+    listenForProduct(
+        productId: _id,
+        message: S.of(state.context).productRefreshedSuccessfuly);
   }
 
   void calculateTotal() {
     total = product?.price ?? 0;
+
     product?.options?.forEach((option) {
       total += option.checked ? option.price : 0;
     });
     total *= quantity;
     setState(() {});
+  }
+
+  void calculateTotalbyInput(qty) {
+    if (qty > 0 || qty != null) {
+      total = product?.price ?? 0;
+      product?.options?.forEach((option) {
+        total += option.checked ? option.price : 0;
+      });
+      this.quantity = qty;
+      total = ((qty * total));
+      print("TOTAL PRICE  = " + total.toString());
+      print("QTY = " + this.quantity.toString());
+
+      setState(() {});
+    }
   }
 
   incrementQuantity() {

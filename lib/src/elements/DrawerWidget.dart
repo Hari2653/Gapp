@@ -8,6 +8,9 @@ import '../repository/settings_repository.dart';
 import '../repository/user_repository.dart';
 
 class DrawerWidget extends StatefulWidget {
+  final GlobalKey<ScaffoldState> parentScaffoldKey;
+  DrawerWidget({Key key, this.parentScaffoldKey}) : super(key: key);
+
   @override
   _DrawerWidgetState createState() => _DrawerWidgetState();
 }
@@ -199,7 +202,7 @@ class _DrawerWidgetState extends StateMVC<DrawerWidget> {
           ),
           ListTile(
             onTap: () {
-              Navigator.of(context).pushNamed('/Favorites');
+               Navigator.of(context).pushNamed('/Pages', arguments: 4);
             },
             leading: Icon(
               Icons.favorite_outline,
@@ -234,19 +237,20 @@ class _DrawerWidgetState extends StateMVC<DrawerWidget> {
               color: Theme.of(context).focusColor.withOpacity(0.3),
             ),
           ),
-          ListTile(
-            onTap: () {
-              Navigator.of(context).pushNamed('/Help');
-            },
-            leading: Icon(
-              Icons.help_outline,
-              color: Theme.of(context).focusColor.withOpacity(1),
-            ),
-            title: Text(
-              S.of(context).help__support,
-              style: Theme.of(context).textTheme.subtitle1,
-            ),
-          ),
+          // ListTile(
+          //   onTap: () {
+          //     Navigator.of(context).pushNamed('/Help');
+          //   },
+          //   leading: Icon(
+          //     Icons.help_outline,
+          //     color: Theme.of(context).focusColor.withOpacity(1),
+          //   ),
+          //   title: Text(
+          //     S.of(context).help__support,
+          //     style: Theme.of(context).textTheme.subtitle1,
+          //   ),
+          // ),
+
           ListTile(
             onTap: () {
               if (currentUser.value.apiToken != null) {
@@ -264,19 +268,20 @@ class _DrawerWidgetState extends StateMVC<DrawerWidget> {
               style: Theme.of(context).textTheme.subtitle1,
             ),
           ),
-          ListTile(
-            onTap: () {
-              Navigator.of(context).pushNamed('/Languages');
-            },
-            leading: Icon(
-              Icons.translate_outlined,
-              color: Theme.of(context).focusColor.withOpacity(1),
-            ),
-            title: Text(
-              S.of(context).languages,
-              style: Theme.of(context).textTheme.subtitle1,
-            ),
-          ),
+          // ListTile(
+          //   onTap: () {
+          //     Navigator.of(context).pushNamed('/Languages');
+          //   },
+          //   leading: Icon(
+          //     Icons.translate_outlined,
+          //     color: Theme.of(context).focusColor.withOpacity(1),
+          //   ),
+          //   title: Text(
+          //     S.of(context).languages,
+          //     style: Theme.of(context).textTheme.subtitle1,
+          //   ),
+          // ),
+
           ListTile(
             onTap: () {
               if (Theme.of(context).brightness == Brightness.dark) {

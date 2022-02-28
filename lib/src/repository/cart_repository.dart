@@ -21,7 +21,14 @@ Future<Stream<Cart>> getCart() async {
   final client = new http.Client();
   final streamedRest = await client.send(http.Request('get', Uri.parse(url)));
   print(url);
-  return streamedRest.stream.transform(utf8.decoder).transform(json.decoder).map((data) => Helper.getData(data)).expand((data) => (data as List)).map((data) {
+  return streamedRest.stream
+      .transform(utf8.decoder)
+      .transform(json.decoder)
+      .map((data) => Helper.getData(data))
+      .expand((data) => (data as List))
+      .map((data) {
+    print(data);
+    print(Cart.fromJSON(data).quantity);
     return Cart.fromJSON(data);
   });
 }
@@ -32,12 +39,16 @@ Future<Stream<int>> getCartCount() async {
     return new Stream.value(0);
   }
   final String _apiToken = 'api_token=${_user.apiToken}&';
-  final String url = '${GlobalConfiguration().getValue('api_base_url')}carts/count?${_apiToken}search=user_id:${_user.id}&searchFields=user_id:=';
+  final String url =
+      '${GlobalConfiguration().getValue('api_base_url')}carts/count?${_apiToken}search=user_id:${_user.id}&searchFields=user_id:=';
 
   final client = new http.Client();
   final streamedRest = await client.send(http.Request('get', Uri.parse(url)));
 
-  return streamedRest.stream.transform(utf8.decoder).transform(json.decoder).map(
+  return streamedRest.stream
+      .transform(utf8.decoder)
+      .transform(json.decoder)
+      .map(
         (data) => Helper.getIntData(data),
       );
 }
@@ -51,18 +62,23 @@ Future<Cart> addCart(Cart cart, bool reset) async {
   final String _apiToken = 'api_token=${_user.apiToken}';
   final String _resetParam = 'reset=${reset ? 1 : 0}';
   cart.userId = _user.id;
-  final String url = '${GlobalConfiguration().getValue('api_base_url')}carts?$_apiToken&$_resetParam';
+  final String url =
+      '${GlobalConfiguration().getValue('api_base_url')}carts?$_apiToken&$_resetParam';
   final client = new http.Client();
+  print(cart.quantity);
+  print(cart);
   final response = await client.post(
     url,
     headers: {HttpHeaders.contentTypeHeader: 'application/json'},
     body: json.encode(cart.toMap()),
   );
   try {
+    print(response.body);
     decodedJSON = json.decode(response.body)['data'] as Map<String, dynamic>;
   } on FormatException catch (e) {
     print(e);
   }
+  print(Cart.fromJSON(decodedJSON).quantity);
   return Cart.fromJSON(decodedJSON);
 }
 
@@ -73,7 +89,8 @@ Future<Cart> updateCart(Cart cart) async {
   }
   final String _apiToken = 'api_token=${_user.apiToken}';
   cart.userId = _user.id;
-  final String url = '${GlobalConfiguration().getValue('api_base_url')}carts/${cart.id}?$_apiToken';
+  final String url =
+      '${GlobalConfiguration().getValue('api_base_url')}carts/${cart.id}?$_apiToken';
   final client = new http.Client();
   final response = await client.put(
     url,
@@ -89,7 +106,8 @@ Future<bool> removeCart(Cart cart) async {
     return false;
   }
   final String _apiToken = 'api_token=${_user.apiToken}';
-  final String url = '${GlobalConfiguration().getValue('api_base_url')}carts/${cart.id}?$_apiToken';
+  final String url =
+      '${GlobalConfiguration().getValue('api_base_url')}carts/${cart.id}?$_apiToken';
   final client = new http.Client();
   final response = await client.delete(
     url,
